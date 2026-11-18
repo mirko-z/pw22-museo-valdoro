@@ -1,0 +1,8 @@
+# File esclusi dalla build dell'immagine
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+experiments/tmp/
+.env

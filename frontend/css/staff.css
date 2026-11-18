@@ -1,0 +1,20 @@
+/* Area staff: Bootstrap 5 (solo CSS, copiato in css/vendor/) più poche regole proprie. */
+
+/* Andamento settimanale: barre orizzontali in CSS, senza librerie di grafici.
+   La larghezza di ogni barra è impostata dal JavaScript (element.style.width),
+   operazione consentita dalla Content Security Policy (non è uno stile inline nell'HTML). */
+.week-bars { display: grid; gap: 0.35rem; }
+.week-bar { display: grid; grid-template-columns: 4.5rem 1fr 2.5rem; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+.week-bar__track { background: var(--bs-tertiary-bg); border-radius: 4px; height: 1.1rem; overflow: hidden; }
+.week-bar__fill { background: var(--bs-primary); height: 100%; border-radius: 0 4px 4px 0; min-width: 2px; }
+.week-bar__value { text-align: right; font-variant-numeric: tabular-nums; }
+
+.kpi-value { font-size: 1.75rem; font-weight: 600; line-height: 1.1; }
+.table td, .table th { vertical-align: middle; }
+
+/* Pulsante "Esci" e messaggi creati dai moduli JS condivisi con la parte pubblica */
+.link-button { background: none; border: 0; padding: 0; color: var(--bs-link-color); text-decoration: underline; }
+.message { padding: 0.75rem 1rem; border-radius: var(--bs-border-radius); background: var(--bs-info-bg-subtle); }
+.message--success { background: var(--bs-success-bg-subtle); color: var(--bs-success-text-emphasis); }
+.message--error { background: var(--bs-danger-bg-subtle); color: var(--bs-danger-text-emphasis); }
+.user-area__name { color: var(--bs-secondary-color); }

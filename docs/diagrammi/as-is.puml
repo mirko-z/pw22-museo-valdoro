@@ -1,0 +1,69 @@
+@startuml as-is
+' Processo AS-IS – Prenotazione di un evento al Museo 
+' Diagramma di attività UML con corsie (swimlane)
+title Processo AS-IS – Prenotazione di un evento
+
+|Visitatore|
+start
+:Chiede di prenotare
+(email o telefono);
+
+|Operatore|
+:Riceve la richiesta;
+:Apre il foglio Excel condiviso;
+:Conta a mano i posti già prenotati;
+if (Posti sufficienti?) then (sì)
+  :Aggiunge una riga al foglio;
+  note right
+    Due operatori possono leggere
+    lo stesso conteggio e registrare
+    entrambi l'ultimo posto:
+    **overbooking**.
+    Nessun controllo sui duplicati:
+    **doppie registrazioni**.
+  end note
+  :Conferma al visitatore
+  (email o telefono);
+else (no)
+  :Comunica l'indisponibilità;
+  stop
+endif
+
+|Visitatore|
+if (Deve annullare?) then (sì)
+  :Telefona o scrive al museo;
+  |Operatore|
+  :Cerca la riga e la cancella;
+  note right
+    La riga viene eliminata:
+    lo storico si perde e il
+    **tasso di annullamento**
+    non è calcolabile.
+  end note
+else (no)
+  |Operatore|
+  :Stampa l'elenco dei partecipanti;
+  |Visitatore|
+  :Partecipa all'evento;
+  :Compila il modulo cartaceo
+  di feedback (facoltativo);
+  |Operatore|
+  :Raccoglie e archivia i moduli;
+  note right
+    Moduli non collegati alla
+    prenotazione, trascritti raramente:
+    **nessun dato aggregato**
+    sulla soddisfazione.
+  end note
+endif
+
+|Direzione|
+:Chiede dati sull'andamento;
+|Operatore|
+:Elabora a mano un riepilogo
+dal foglio Excel;
+|Direzione|
+:Riceve un report occasionale,
+non confrontabile nel tempo;
+stop
+@enduml

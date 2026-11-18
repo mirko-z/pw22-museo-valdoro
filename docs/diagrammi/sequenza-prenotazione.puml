@@ -1,0 +1,82 @@
+@startuml sequenza-prenotazione
+' Diagramma di sequenza – UC04 Prenotare un evento, con due richieste concorrenti
+' Scenario del caso d'uso UC04 con due richieste concorrenti
+' Scenario: restano 2 posti; due visitatori chiedono 2 posti nello stesso istante.
+title UC04 – Due prenotazioni simultanee sugli ultimi posti (strategia con lock)
+
+autonumber
+skinparam sequenceMessageAlign left
+
+actor "Visitatore A" as VA
+actor "Visitatore B" as VB
+participant "nginx\n(reverse proxy)" as NG
+participant "API – thread A\nrouter + BookingService" as TA
+participant "API – thread B\nrouter + BookingService" as TB
+database "PostgreSQL" as DB
+
+== 1. Richieste simultanee ==
+VA -> NG : POST /api/bookings\n{event_id: 7, seats: 2} + cookie JWT
+VB -> NG : POST /api/bookings\n{event_id: 7, seats: 2} + cookie JWT
+
+== 2. Reverse proxy ==
+NG -> TA : inoltra a api:8000
+NG -> TB : inoltra a api:8000
+
+== 3. Dipendenze: sessione e utente corrente ==
+note over TA, TB
+  Ogni richiesta ha la propria sessione e quindi la propria
+  connessione dal pool. L'utente è ricavato dal JWT e deve avere
+  ruolo visitor; Pydantic valida il corpo (seats > 0).
+end note
+
+== 4. Chiamata al service ==
+TA -> TA : BookingService.create()\ncon LockingBookingStrategy
+TB -> TB : BookingService.create()\ncon LockingBookingStrategy
+
+== 5. Transazione con lock di riga ==
+TA -> DB : BEGIN
+TA -> DB : SELECT ... FROM events\nWHERE id = 7 FOR UPDATE
+activate DB
+DB --> TA : riga dell'evento (lock acquisito)
+TB -> DB : BEGIN
+TB -> DB : SELECT ... FROM events\nWHERE id = 7 FOR UPDATE
+note right of TB
+  Il thread B attende: la riga è bloccata
+  dalla transazione A. Le letture semplici
+  non sono bloccate, ma ogni prenotazione
+  sullo stesso evento passa di qui.
+end note
+
+TA -> TA : evento scheduled e non iniziato;\nseats <= max_seats_per_booking
+TA -> DB : esiste una prenotazione confermata\ndi A per l'evento 7?
+DB --> TA : no
+TA -> DB : SELECT SUM(seats) FROM bookings\nWHERE event_id = 7 AND status = 'confirmed'
+DB --> TA : capienza − confermati = 2 ≥ 2
+TA -> DB : INSERT INTO bookings\n(seats = 2, status = 'confirmed', code casuale)
+TA -> DB : COMMIT
+DB -> DB : scrittura del WAL su disco (durabilità)
+DB --> TA : commit eseguito, lock rilasciato
+deactivate DB
+
+DB --> TB : riga dell'evento (lock acquisito)
+activate DB
+TB -> TB : stesse verifiche di A
+TB -> DB : SELECT SUM(seats) ... (vede il commit di A)
+DB --> TB : capienza − confermati = 0 < 2
+TB -> DB : ROLLBACK
+DB --> TB : lock rilasciato
+deactivate DB
+
+== 6. Risposte ==
+TA --> NG : 201 Created\n{code: "K7QXM2D9TA", seats: 2, ...}
+NG --> VA : 201 Created
+TB --> NG : 409 Conflict\n{code: "SEATS_UNAVAILABLE", ...}
+NG --> VB : 409 Conflict
+
+note over VA, DB
+  Senza FOR UPDATE (NaiveBookingStrategy) entrambi i thread leggerebbero
+  2 posti disponibili prima che l'altro scriva: due INSERT, 4 posti venduti
+  su 2 (overbooking). L'esperimento misura questa differenza e il costo
+  in latenza dell'attesa del lock.
+end note
+@enduml

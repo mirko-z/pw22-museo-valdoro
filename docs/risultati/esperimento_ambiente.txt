@@ -1,0 +1,5 @@
+data: 2026-10-15T12:29:05+00:00
+python: 3.12.15
+sistema: Linux-7.0.14-linuxkit-aarch64-with-glibc2.41
+cpu logiche: 8
+parametri: {'n': [10, 50, 100], 'repetitions': 10, 'seats_left': 2, 'strategies': ['locking', 'naive'], 'warmup': 1, 'out': PosixPath('results')}

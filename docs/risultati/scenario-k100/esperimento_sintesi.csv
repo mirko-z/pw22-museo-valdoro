@@ -1,0 +1,3 @@
+strategy,n,repetitions,seats_left,runs_with_overbooking,accepted_mean,accepted_std,rejected_mean,rejected_std,oversold_mean,oversold_std,latency_mean_ms_mean,latency_mean_ms_std,latency_median_ms_mean,latency_median_ms_std,latency_p95_ms_mean,latency_p95_ms_std,throughput_rps_mean,throughput_rps_std
+locking,100,10,100,0,100.0,0.0,0.0,0.0,0.0,0.0,111.45,7.84,112.48,8.86,191.38,13.69,473.14,30.74
+naive,100,10,100,0,100.0,0.0,0.0,0.0,0.0,0.0,160.08,17.98,165.53,19.45,182.39,19.72,536.25,47.73

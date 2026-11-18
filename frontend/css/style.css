@@ -1,0 +1,302 @@
+/* =============================================================================
+   Museo Civico di Valdoro – parte pubblica e area visitatore
+   Mobile-first, nessuna dipendenza esterna (CSP: solo risorse della stessa origine).
+   Identità: tono sobrio da museo civico; titoli serif (Source Serif 4, licenza
+   OFL, servito in locale da css/fonts/), testo in font di sistema, bordeaux come
+   colore d'accento, un colore per ciascun tipo di evento.
+   ============================================================================= */
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("fonts/source-serif-4-latin-600-normal.woff2") format("woff2");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("fonts/source-serif-4-latin-700-normal.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
+:root {
+  /* Colori (contrasti del testo verificati ≥ 4,5:1, WCAG AA) */
+  --color-bg: #fdfdfc;           /* fondo quasi bianco */
+  --color-surface: #ffffff;
+  --color-sand: #f1f1f0;          /* grigio leggero: sezioni di stacco, piè di pagina, etichette */
+  --color-text: #1f1c19;
+  --color-text-muted: #5c5650;
+  --color-border: #ddd6c9;
+  --color-primary: #8a6516;       /* oro scuro: link, bordi, testo dei pulsanti secondari */
+  --color-primary-dark: #6b4e10;
+  --color-gold: #c9a24a;          /* oro: sfondo dei pulsanti principali (testo scuro) */
+  --color-gold-dark: #b48d36;
+  --color-gold-light: #f4e9c8;    /* paglierino: filtro selezionato */
+  --color-primary-contrast: #2b2622;
+  --color-ink: #2b2622;           /* fascia scura dell'intestazione */
+  --color-success: #1e6b3a;
+  --color-success-bg: #e5f1e8;
+  --color-error: #a12622;
+  --color-error-bg: #fbe8e6;
+  --color-warning: #8a5a00;
+  --color-warning-bg: #fbf0d9;
+  --color-info-bg: #ecefe9;
+
+  /* Un colore per tipo di evento: titolo della scheda e voce del filtro */
+  --type-guided_tour: #7a2e2e;
+  --type-workshop: #2f5d50;
+  --type-conference: #3d4f7a;
+
+  /* Tipografia */
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, Menlo, Consolas, monospace;
+  --font-size-small: 0.875rem;
+  --line-height: 1.55;
+
+  /* Spaziature e forme */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+  --space-6: 4rem;
+  --radius: 4px;
+  --container: 72rem;
+  --shadow: 0 1px 2px rgb(31 28 25 / 6%), 0 4px 12px rgb(31 28 25 / 5%);
+  --focus-ring: 0 0 0 3px rgb(201 162 74 / 55%);
+}
+
+/* --- Base ------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  line-height: var(--line-height);
+  color: var(--color-text);
+  background: var(--color-bg);
+  display: flex; flex-direction: column; min-height: 100vh;
+}
+main { flex: 1; }
+h1, h2, h3 { font-family: var(--font-heading); font-weight: 600; line-height: 1.2; margin: 0 0 var(--space-3); text-wrap: balance; }
+h1 { font-size: clamp(1.75rem, 4.5vw, 2.6rem); font-weight: 700; }
+h2 { font-size: clamp(1.35rem, 3vw, 1.7rem); }
+h3 { font-size: 1.2rem; }
+p { margin: 0 0 var(--space-3); }
+a { color: var(--color-primary); text-underline-offset: 0.15em; }
+a:hover { color: var(--color-primary-dark); }
+img { max-width: 100%; height: auto; }
+:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 2px; }
+
+.container { width: min(100% - 2 * var(--space-3), var(--container)); margin-inline: auto; }
+.section { padding-block: var(--space-5); }
+.muted { color: var(--color-text-muted); }
+.small { font-size: var(--font-size-small); }
+.eyebrow {
+  margin: 0 0 var(--space-2); font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-muted);
+}
+.page-title { margin-bottom: var(--space-2); }
+.page-intro { max-width: 42rem; color: var(--color-text-muted); margin-bottom: var(--space-4); }
+.skip-link { position: absolute; left: -999px; top: 0; }
+.skip-link:focus { left: var(--space-3); top: var(--space-2); z-index: 10; background: var(--color-surface); padding: var(--space-2) var(--space-3); }
+
+/* --- Intestazione ---------------------------------------------------------------- */
+.site-header { background: var(--color-ink); color: #f4efe6; }
+.site-header__inner {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--space-2) var(--space-4); padding-block: var(--space-3);
+}
+.brand { display: inline-flex; align-items: center; color: inherit; text-decoration: none; }
+.brand:hover { color: inherit; }
+.brand__text { display: grid; line-height: 1.1; }
+.brand__small { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.75; }
+.brand__name { font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; }
+.site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); }
+/* le voci dell'area utente scorrono insieme a "Eventi" invece di andare a capo in blocco */
+.user-area { display: contents; }
+.site-nav a, .site-nav .link-button { color: #f4efe6; text-decoration: none; font-weight: 500; padding-block: var(--space-1); border-bottom: 2px solid transparent; }
+.site-nav a:hover, .site-nav .link-button:hover { color: #fff; border-bottom-color: rgb(244 239 230 / 50%); }
+.site-nav a[aria-current="page"] { border-bottom-color: var(--color-gold); }
+.user-area__name { font-size: var(--font-size-small); opacity: 0.8; }
+.user-area__name::before { content: "·"; margin-right: var(--space-2); opacity: 0.6; }
+
+/* --- Piè di pagina ------------------------------------------------------------------ */
+.site-footer { background: var(--color-sand); border-top: 1px solid var(--color-border); padding-block: var(--space-5) var(--space-4); color: var(--color-text-muted); font-size: var(--font-size-small); }
+.site-footer__grid { display: grid; gap: var(--space-4); }
+.site-footer h2 { font-size: 1rem; color: var(--color-text); margin-bottom: var(--space-2); }
+.site-footer p { margin: 0; }
+.site-footer .site-footer__note { margin-top: var(--space-4); }
+@media (min-width: 48rem) { .site-footer__grid { grid-template-columns: 2fr 1fr 1fr; } }
+
+/* --- Pulsanti ------------------------------------------------------------------ */
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  min-height: 2.75rem; /* area di tocco adeguata su mobile */
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-gold); border-radius: var(--radius);
+  background: var(--color-gold); color: var(--color-primary-contrast);
+  font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.button:hover { background: var(--color-gold-dark); border-color: var(--color-gold-dark); color: var(--color-primary-contrast); }
+.button--secondary { background: transparent; border-color: var(--color-primary); color: var(--color-primary); }
+.button--secondary:hover { background: var(--color-sand); color: var(--color-primary-dark); }
+.button--light { background: var(--color-gold); border-color: var(--color-gold); color: var(--color-ink); }
+.button--light:hover { background: #d4af5a; border-color: #d4af5a; color: var(--color-ink); }
+.button:disabled { opacity: 0.55; cursor: not-allowed; }
+.link-button { background: none; border: 0; padding: 0; font: inherit; color: var(--color-primary); text-decoration: underline; cursor: pointer; }
+
+/* --- Moduli -------------------------------------------------------------------- */
+.form { display: grid; gap: var(--space-3); }
+.field { display: grid; gap: var(--space-1); }
+.field label { font-weight: 600; font-size: 0.95rem; }
+.field input, .field select, .field textarea {
+  width: 100%; min-height: 2.75rem; padding: var(--space-2) var(--space-3);
+  border: 1px solid #b9b0a2; border-radius: var(--radius);
+  font: inherit; color: inherit; background: var(--color-surface);
+}
+.field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible { border-color: var(--color-primary); }
+.field textarea { min-height: 5.5rem; resize: vertical; }
+.field__hint { font-size: var(--font-size-small); color: var(--color-text-muted); }
+
+/* --- Messaggi ------------------------------------------------------------------ */
+.message { padding: var(--space-3); border-radius: var(--radius); border-left: 4px solid #8d9a86; background: var(--color-info-bg); margin: 0 0 var(--space-4); }
+.message--success { background: var(--color-success-bg); border-left-color: var(--color-success); color: var(--color-success); }
+.message--error { background: var(--color-error-bg); border-left-color: var(--color-error); color: var(--color-error); }
+.message a { color: inherit; font-weight: 600; }
+
+/* --- Barra dei filtri ------------------------------------------------------------- */
+.filters { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0 0 var(--space-4); padding: 0; border: 0; }
+.filters legend { width: 100%; margin-bottom: var(--space-2); font-weight: 600; font-size: 0.95rem; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chip span {
+  display: inline-flex; align-items: center; min-height: 2.5rem; padding: var(--space-1) var(--space-3);
+  border: 0; border-radius: 0; background: transparent;
+  font-weight: 600; font-size: 0.95rem; color: var(--chip-color, var(--color-text));
+}
+/* solo con il mouse: sui touchscreen l'effetto resterebbe attaccato dopo il tocco */
+@media (hover: hover) { .chip:hover span { background: #faf4e2; } }
+.chip input:checked + span { background: var(--color-gold-light); }
+.chip input:focus-visible + span { box-shadow: var(--focus-ring); }
+.chip--guided_tour { --chip-color: var(--type-guided_tour); }
+.chip--workshop { --chip-color: var(--type-workshop); }
+.chip--conference { --chip-color: var(--type-conference); }
+
+/* --- Elenchi raggruppati per mese --------------------------------------------------- */
+.month { margin-bottom: var(--space-5); }
+.month__title {
+  display: flex; align-items: baseline; gap: var(--space-3); font-size: 1.35rem;
+  padding-bottom: var(--space-2); border-bottom: 1px solid var(--color-border); margin-bottom: var(--space-4);
+}
+.month__title::first-letter { text-transform: uppercase; }
+.month__count { font-family: var(--font-body); font-size: var(--font-size-small); font-weight: 400; color: var(--color-text-muted); }
+
+/* --- Schede ---------------------------------------------------------------------- */
+.card-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); list-style: none; padding: 0; margin: 0; }
+.card {
+  --accent: var(--color-text);
+  position: relative; display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius);
+  box-shadow: var(--shadow); scroll-margin-top: var(--space-4);
+}
+.card:target { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.card--guided_tour { --accent: var(--type-guided_tour); }
+.card--workshop { --accent: var(--type-workshop); }
+.card--conference { --accent: var(--type-conference); }
+.card--muted { --month: var(--color-text-muted); box-shadow: none; background: #f7f5f0; }
+.card--muted .card__title { color: var(--color-text-muted); }
+.card__head { display: flex; gap: var(--space-3); align-items: flex-start; }
+.card__title { margin: 0; font-size: 1.2rem; color: var(--accent); }
+.card__type { margin: 0 0 var(--space-1); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); }
+.card__desc { margin: 0; color: var(--color-text-muted); font-size: 0.95rem; }
+.card__meta { display: grid; grid-template-columns: auto 1fr; gap: var(--space-1) var(--space-3); margin: var(--space-2) 0 0; font-size: 0.92rem; }
+.card__meta dt { color: var(--color-text-muted); }
+.card__meta dd { margin: 0; }
+.card__actions { margin-top: auto; padding-top: var(--space-3); display: grid; gap: var(--space-3); }
+.card__note { margin: 0; font-size: var(--font-size-small); color: var(--color-text-muted); }
+
+/* Blocco data in stile calendario */
+.date-block {
+  flex: none; display: grid; justify-items: center; width: 3.6rem; padding: var(--space-1) 0 var(--space-2);
+  border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-bg); line-height: 1.1;
+}
+.date-block__weekday { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); }
+.date-block__day { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; }
+.date-block__month { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--month, var(--color-primary)); }
+
+/* Disponibilità dei posti (solo testo) */
+.seats-few { color: var(--color-warning); font-weight: 600; }
+.seats-none { color: var(--color-error); font-weight: 600; }
+
+.badge {
+  display: inline-block; width: fit-content; padding: 0.15rem var(--space-2); border-radius: 999px;
+  font-size: 0.8rem; font-weight: 600; background: var(--color-sand); color: var(--color-text);
+}
+.badge--soldout, .badge--cancelled { background: var(--color-error-bg); color: var(--color-error); }
+.badge--confirmed { background: var(--color-success-bg); color: var(--color-success); }
+.badge--past { background: var(--color-sand); color: var(--color-text-muted); }
+
+/* Modulo di prenotazione nella scheda */
+.book-form { display: grid; grid-template-columns: auto 1fr; align-items: end; gap: var(--space-2) var(--space-3); }
+.book-form .field input { width: 5.5rem; }
+.book-form__hint { grid-column: 1 / -1; margin: 0; font-size: var(--font-size-small); color: var(--color-text-muted); }
+
+/* Codice di prenotazione in stile biglietto */
+.ticket {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+  padding: var(--space-2) var(--space-3); border: 1px dashed #b9b0a2; border-radius: var(--radius); background: var(--color-bg);
+}
+.ticket__label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); }
+.booking-code { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; letter-spacing: 0.1em; }
+
+/* Feedback dentro la scheda */
+.feedback { border-top: 1px solid var(--color-border); padding-top: var(--space-3); }
+.feedback h3 { font-size: 1.05rem; margin-bottom: var(--space-2); }
+
+/* --- Home ---------------------------------------------------------------------- */
+.hero {
+  position: relative; overflow: hidden; color: #f4efe6; padding-block: var(--space-6);
+  background-color: var(--color-ink);
+  /* velo scuro sopra la foto: il testo resta leggibile qualunque sia l'immagine */
+  background-image: linear-gradient(90deg, rgb(43 38 34 / 88%) 0%, rgb(43 38 34 / 70%) 55%, rgb(43 38 34 / 35%) 100%), url("/img/hero.jpeg");
+  background-size: cover; background-position: center;
+}
+@media (min-width: 48rem) { .hero { padding-block: 6rem; } }
+.hero__inner { position: relative; z-index: 1; max-width: 42rem; }
+.hero .eyebrow { color: #e5c97e; }
+.hero h1 { color: #fff; }
+.hero p { font-size: 1.1rem; color: #e6dfd3; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-4); }
+.hero .button--secondary { color: #f4efe6; border-color: rgb(244 239 230 / 60%); }
+.hero .button--secondary:hover { background: rgb(244 239 230 / 10%); color: #fff; }
+
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); counter-reset: step; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: auto 1fr; gap: 0 var(--space-3); }
+.steps li::before {
+  content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 2.4rem; height: 2.4rem;
+  border-radius: 50%; background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-primary); font-family: var(--font-heading); font-weight: 700; font-size: 1.15rem;
+}
+.steps h3 { margin: 0.2rem 0 var(--space-1); font-size: 1.1rem; }
+.steps p { margin: 0; color: var(--color-text-muted); font-size: 0.95rem; }
+@media (min-width: 48rem) { .steps { grid-template-columns: repeat(3, 1fr); } }
+.section--sand { background: var(--color-sand); }
+.section__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-2) var(--space-4); margin-bottom: var(--space-4); }
+.section__head h2 { margin: 0; }
+.section__foot { margin: var(--space-4) 0 0; text-align: right; font-weight: 600; }
+
+/* --- Accesso ------------------------------------------------------------------ */
+.auth-grid { display: grid; gap: var(--space-4); align-items: start; }
+.panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); box-shadow: var(--shadow); padding: var(--space-4); }
+.panel--quiet { background: transparent; box-shadow: none; border-style: dashed; }
+.panel h1, .panel h2 { font-size: 1.5rem; }
+@media (min-width: 48rem) {
+  .auth-grid { grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+  .panel { padding: var(--space-5); }
+}
+
+/* --- Prenotazioni ----------------------------------------------------------------- */
+.bookings-section + .bookings-section { margin-top: var(--space-5); }
+.bookings-section > h2 { font-size: 1.35rem; padding-bottom: var(--space-2); border-bottom: 1px solid var(--color-border); margin-bottom: var(--space-4); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }

@@ -1,0 +1,7 @@
+strategy,n,repetitions,seats_left,runs_with_overbooking,accepted_mean,accepted_std,rejected_mean,rejected_std,oversold_mean,oversold_std,latency_mean_ms_mean,latency_mean_ms_std,latency_median_ms_mean,latency_median_ms_std,latency_p95_ms_mean,latency_p95_ms_std,throughput_rps_mean,throughput_rps_std
+locking,10,10,2,0,2.0,0.0,8.0,0.0,0.0,0.0,11.63,6.42,11.79,6.54,15.7,6.27,631.56,123.54
+locking,50,10,2,0,2.0,0.0,48.0,0.0,0.0,0.0,38.79,7.86,38.41,8.08,60.4,8.21,734.24,69.26
+locking,100,10,2,0,2.0,0.0,98.0,0.0,0.0,0.0,74.21,8.16,72.52,8.74,118.72,8.59,739.04,58.25
+naive,10,10,2,10,9.4,0.97,0.6,0.97,7.4,0.97,14.86,0.76,15.05,0.63,16.11,0.65,601.74,22.69
+naive,50,10,2,10,30.3,5.64,19.7,5.64,28.3,5.64,69.3,21.5,71.43,22.35,79.39,23.35,643.12,126.19
+naive,100,10,2,10,60.6,13.28,39.4,13.28,58.6,13.28,133.99,15.17,136.64,14.97,154.84,16.54,635.22,66.54

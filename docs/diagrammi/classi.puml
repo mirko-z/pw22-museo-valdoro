@@ -1,0 +1,146 @@
+@startuml classi
+' Diagramma delle classi del livello di logica di business (services)
+' Fonte: backend/app/services/, backend/app/core/errors.py, backend/app/models/
+' Solo i metodi pubblici; le classi ORM sono indicate senza attributi (vedi er.puml).
+title Diagramma delle classi – service e strategie di prenotazione
+
+skinparam classAttributeIconSize 0
+hide empty members
+left to right direction
+skinparam nodesep 25
+skinparam ranksep 40
+
+package "services" {
+
+  class BookingService {
+    - db : Session
+    - strategy : BookingStrategy
+    + BookingService(db : Session, strategy : BookingStrategy = LockingBookingStrategy())
+    + book(user : User, event_id : int, seats : int) : BookingWithEvent
+    + list_mine(user : User) : list[BookingWithEvent]
+    + cancel(user : User, code : str) : BookingWithEvent
+  }
+
+  abstract class BookingStrategy {
+    + name : str
+    + critical_section_delay : float
+    + reserve(db : Session, user : User, event_id : int, seats : int) : Booking
+    # {abstract} _load_event(db : Session, event_id : int) : Event
+  }
+
+  class LockingBookingStrategy {
+    + name = "locking"
+    # _load_event(...) : Event
+  }
+  note bottom of LockingBookingStrategy
+    SELECT ... FOR UPDATE
+    (usata dall'applicazione)
+  end note
+
+  class NaiveBookingStrategy {
+    + name = "naive"
+    # _load_event(...) : Event
+  }
+  note bottom of NaiveBookingStrategy
+    SELECT senza lock
+    (solo test ed esperimento)
+  end note
+
+  class BookingWithEvent <<dataclass>> {
+    + booking : Booking
+    + event : Event
+    + my_rating : int
+    + can_cancel(now : datetime) : bool
+    + can_leave_feedback(now : datetime) : bool
+  }
+
+  class EventService {
+    + list_upcoming(event_type : EventType) : list[EventWithSeats]
+    + get(event_id : int) : EventWithSeats
+    + create(data : EventCreate) : EventWithSeats
+    + update(event_id : int, data : EventUpdate) : EventWithSeats
+    + cancel(event_id : int) : EventWithSeats
+    + delete(event_id : int)
+    + participants(event_id : int) : list
+  }
+
+  class EventWithSeats <<dataclass>> {
+    + event : Event
+    + available_seats : int
+    + is_ended : bool
+  }
+
+  class FeedbackService {
+    + leave(user : User, event_id : int, rating : int, comment : str) : Feedback
+    + for_event(event_id : int) : list
+  }
+
+  class DashboardService {
+    + event_stats() : list[EventStats]
+    + overview() : dict
+    + by_type() : list[dict]
+    + weekly(weeks : int) : list[dict]
+  }
+
+  class EventStats <<dataclass>> {
+    + fill_rate() : float  (K6)
+    + cancellation_rate() : float  (K5)
+    + feedback_coverage() : float  (K7)
+    + average_rating() : float  (K8)
+  }
+
+  class UserService {
+    + register(email : str, full_name : str, password : str) : User
+    + authenticate(email : str, password : str) : User
+    + list_users() : list[User]
+    + change_role(actor : User, user_id : int, role : UserRole) : User
+  }
+}
+
+package "core" {
+  class DomainError {
+    + code : str
+    + detail : str
+    + status_code : int
+  }
+  class NotAuthenticated
+  class Forbidden
+  class NotFound
+  note bottom of DomainError
+    Sollevata da tutti i service;
+    un unico handler la traduce
+    in {"detail", "code"} + stato HTTP
+  end note
+}
+
+package "models (ORM)" {
+  class User
+  class Event
+  class Booking
+  class Feedback
+}
+
+BookingStrategy <|-- LockingBookingStrategy
+BookingStrategy <|-- NaiveBookingStrategy
+BookingService o--> "1" BookingStrategy : strategy
+BookingService ..> BookingWithEvent : crea
+EventService ..> EventWithSeats : crea
+DashboardService ..> EventStats : crea
+
+BookingStrategy ..> Booking : inserisce
+BookingStrategy ..> Event : legge
+
+DomainError <|-- NotAuthenticated
+DomainError <|-- Forbidden
+DomainError <|-- NotFound
+
+
+note left of BookingStrategy
+  Strategy + Template Method:
+  reserve() fissa la sequenza
+  (leggi, controlla, inserisci, commit);
+  le sottoclassi cambiano solo
+  come si legge la riga dell'evento.
+end note
+
+@enduml

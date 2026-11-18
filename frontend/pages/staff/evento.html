@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Partecipanti e feedback – Area staff</title>
+  <link rel="stylesheet" href="/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/staff.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand bg-body-tertiary border-bottom mb-4" aria-label="Area staff">
+    <div class="container flex-wrap gap-2">
+      <span class="navbar-brand">Valdoro · Staff</span>
+      <div class="navbar-nav flex-wrap">
+        <a class="nav-link" href="/pages/staff/dashboard.html" data-staff-only hidden>Dashboard</a>
+        <a class="nav-link" href="/pages/staff/eventi.html" data-staff-only hidden>Eventi</a>
+        <a class="nav-link" href="/">Sito pubblico</a>
+      </div>
+      <div class="ms-auto d-flex gap-3 align-items-center small" data-user-area></div>
+    </div>
+  </nav>
+
+  <main class="container pb-5">
+    <h1 class="h3" data-title>Evento</h1>
+    <p class="text-body-secondary" data-summary></p>
+    <div data-message role="status"></div>
+
+    <div class="row g-4">
+      <section class="col-lg-7">
+        <h2 class="h5">Partecipanti</h2>
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead><tr>
+              <th scope="col">Nome</th><th scope="col">Email</th><th scope="col" class="text-end">Posti</th><th scope="col">Codice</th>
+            </tr></thead>
+            <tbody data-participants></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="col-lg-5">
+        <h2 class="h5">Feedback</h2>
+        <ul class="list-group" data-feedback></ul>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="/js/pages/staff-evento.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+@startuml er
+' Schema logico del database
+title Modello dei dati (schema logico)
+
+hide circle
+skinparam linetype ortho
+
+entity "users" as users {
+  * id : integer <<PK>>
+  --
+  * email : varchar(254) <<UQ lower(email)>>
+  * password_hash : varchar(60)
+  * full_name : varchar(120)
+  * role : varchar(10) = 'visitor'
+  * created_at : timestamptz = now()
+}
+
+entity "events" as events {
+  * id : integer <<PK>>
+  --
+  * title : varchar(200)
+    description : text
+  * type : varchar(20)
+  * start_at : timestamptz <<IX>>
+  * end_at : timestamptz
+  * capacity : integer
+  * price : numeric(8,2) = 0
+  * status : varchar(10) = 'scheduled'
+  * max_seats_per_booking : integer
+  * cancellation_deadline_hours : integer
+  * created_at : timestamptz = now()
+}
+
+entity "bookings" as bookings {
+  * id : integer <<PK>>
+  --
+  * user_id : integer <<FK, IX>>
+  * event_id : integer <<FK, IX>>
+  * seats : integer
+  * status : varchar(10) = 'confirmed'
+  * code : varchar(12) <<UQ>>
+  * created_at : timestamptz = now()
+    cancelled_at : timestamptz
+}
+
+entity "feedback" as feedback {
+  * id : integer <<PK>>
+  --
+  * user_id : integer <<FK>>
+  * event_id : integer <<FK, IX>>
+  * rating : smallint
+    comment : text
+  * created_at : timestamptz = now()
+  --
+  UQ (user_id, event_id)
+}
+
+' Layout e griglia di posizionamento
+users -[hidden]right- events
+bookings -[hidden]right- feedback
+users -[hidden]down- bookings
+events -[hidden]down- feedback
+
+' Relazioni
+users     ||--o{ bookings : effettua
+bookings  }o--|| events   : riguarda
+users     ||--o{ feedback : lascia
+feedback  }o--|| events   : riguarda
+
+note bottom of events
+  CHECK
+  • type IN (guided_tour, workshop, conference)
+  • status IN (scheduled, cancelled)
+  • end_at > start_at
+  • capacity > 0, price >= 0
+  • 0 < max_seats_per_booking <= capacity
+  • cancellation_deadline_hours >= 0
+  "Svolto" non è memorizzato: end_at < now()
+end note
+
+note top of bookings
+  Indice univoco PARZIALE uq_bookings_active:
+  (user_id, event_id) WHERE status = 'confirmed'
+  → una sola prenotazione attiva per utente ed evento
+  CHECK
+  • seats > 0
+  • status IN (confirmed, cancelled)
+  • (status = 'cancelled') = (cancelled_at IS NOT NULL)
+  Posti disponibili non memorizzati:
+  capacity − SUM(seats) confermati, calcolati sotto lock
+end note
+
+note bottom of feedback
+  CHECK
+  • rating BETWEEN 1 AND 5
+  • char_length(comment) <= 1000
+  Ammissibilità (prenotazione confermata,
+  evento concluso e non annullato):
+  verificata nel service
+end note
+
+note bottom of users
+  CHECK role IN (visitor, staff, admin)
+end note
+@enduml

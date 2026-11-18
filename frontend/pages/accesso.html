@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accesso – Museo Civico di Valdoro</title>
+  <link rel="preload" href="/css/fonts/source-serif-4-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/">
+        <span class="brand__text"><span class="brand__small">Museo Civico</span><span class="brand__name">Valdoro</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Navigazione principale">
+        <a href="/pages/eventi.html">Eventi</a>
+        <div class="user-area" data-user-area></div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenuto" class="section">
+    <div class="container auth-grid">
+      <section class="panel">
+        <h1>Accedi</h1>
+        <p class="muted">Entra con l'email e la password del tuo account.</p>
+        <div data-login-message role="status" aria-live="polite"></div>
+        <form class="form" data-login-form>
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input id="login-email" name="email" type="email" autocomplete="username" required>
+          </div>
+          <div class="field">
+            <label for="login-password">Password</label>
+            <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <button class="button" type="submit">Accedi</button>
+        </form>
+      </section>
+
+      <section class="panel panel--quiet">
+        <h2>Non hai un account?</h2>
+        <p class="muted">Registrati per prenotare visite, laboratori e conferenze. Chiediamo solo i dati necessari: nome ed email.</p>
+        <div data-register-message role="status" aria-live="polite"></div>
+        <form class="form" data-register-form>
+          <div class="field">
+            <label for="reg-name">Nome e cognome</label>
+            <input id="reg-name" name="full_name" autocomplete="name" minlength="2" maxlength="120" required>
+          </div>
+          <div class="field">
+            <label for="reg-email">Email</label>
+            <input id="reg-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+          </div>
+          <div class="field">
+            <label for="reg-password">Password</label>
+            <input id="reg-password" name="password" type="password" autocomplete="new-password" minlength="8" required
+                   aria-describedby="reg-password-hint">
+            <span class="field__hint" id="reg-password-hint">Almeno 8 caratteri.</span>
+          </div>
+          <button class="button button--secondary" type="submit">Registrati</button>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="site-footer__grid">
+        <div>
+          <h2>Museo Civico di Valdoro</h2>
+          <p>Collezione permanente di storia e arte del territorio, mostre temporanee, visite guidate, laboratori e conferenze.</p>
+        </div>
+        <div>
+          <h2>Prenotazioni</h2>
+          <p><a href="/pages/eventi.html">Programma degli eventi</a></p>
+          <p><a href="/pages/prenotazioni.html">Le mie prenotazioni</a></p>
+        </div>
+        <div>
+          <h2>Contatti</h2>
+          <p>info@museovaldoro.example</p>
+        </div>
+      </div>
+      <p class="site-footer__note">Organizzazione simulata: nome del museo, nomi degli utenti e degli amministratori, eventi e dati sono inventati.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/js/pages/accesso.js"></script>
+</body>
+</html>

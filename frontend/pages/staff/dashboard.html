@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard – Area staff</title>
+  <link rel="stylesheet" href="/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/staff.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand bg-body-tertiary border-bottom mb-4" aria-label="Area staff">
+    <div class="container flex-wrap gap-2">
+      <span class="navbar-brand">Valdoro · Staff</span>
+      <div class="navbar-nav flex-wrap">
+        <a class="nav-link active" aria-current="page" href="/pages/staff/dashboard.html" data-staff-only hidden>Dashboard</a>
+        <a class="nav-link" href="/pages/staff/eventi.html" data-staff-only hidden>Eventi</a>
+        <a class="nav-link" href="/">Sito pubblico</a>
+      </div>
+      <div class="ms-auto d-flex gap-3 align-items-center small" data-user-area></div>
+    </div>
+  </nav>
+
+  <main class="container pb-5">
+    <h1 class="h3 mb-3">Dashboard</h1>
+    <div data-message role="status"></div>
+
+    <section class="row g-3 mb-4" data-kpis aria-label="Indicatori complessivi"></section>
+
+    <div class="row g-4">
+      <section class="col-lg-8">
+        <h2 class="h5">Per evento</h2>
+        <div class="table-responsive">
+          <table class="table table-sm table-hover">
+            <thead><tr>
+              <th scope="col">Evento</th><th scope="col">Data</th><th scope="col" class="text-end">Posti</th>
+              <th scope="col" class="text-end">Riempimento</th><th scope="col" class="text-end">Annullamenti</th>
+              <th scope="col" class="text-end">Voto</th><th scope="col" class="text-end">Copertura feedback</th>
+            </tr></thead>
+            <tbody data-events></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="col-lg-4">
+        <h2 class="h5">Per tipo (eventi conclusi)</h2>
+        <table class="table table-sm mb-4">
+          <thead><tr><th scope="col">Tipo</th><th scope="col" class="text-end">Riempimento</th><th scope="col" class="text-end">Voto</th></tr></thead>
+          <tbody data-types></tbody>
+        </table>
+        <h2 class="h5">Prenotazioni per settimana</h2>
+        <div class="week-bars" data-weekly></div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="/js/pages/staff-dashboard.js"></script>
+</body>
+</html>

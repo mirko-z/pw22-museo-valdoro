@@ -1,0 +1,59 @@
+@startuml architettura
+' Architettura e deployment 
+' Fonte: docker-compose.yml, frontend/nginx.conf
+title Architettura client/server a tre livelli (Docker Compose)
+
+skinparam componentStyle rectangle
+
+node "Dispositivo del visitatore o dello staff" as client {
+  component "Browser\nHTML, CSS, JavaScript (ES modules)\nfetch, cookie HttpOnly con il JWT" as browser
+}
+
+node "Host Docker – rete interna di Compose" as host {
+
+  node "web\n(nginx)" as web {
+    component "File statici\nindex.html, pages/, css/, js/" as static
+    component "Reverse proxy\n/api/ → api:8000\nintestazioni di sicurezza (CSP)" as proxy
+  }
+
+  node "api\n(Python 3.12, Uvicorn)" as api {
+    component "Worker Uvicorn\n(processi × pool di thread)" as uvicorn
+    package "Applicazione FastAPI" {
+      component "routers/\nHTTP, codici di stato" as routers
+      component "schemas/\nPydantic: validazione, JSON" as schemas
+      component "services/\nlogica di business\nstrategie di prenotazione" as services
+      component "models/\nORM SQLAlchemy" as models
+      component "core/\nSettings, sicurezza,\nsessione DB" as core
+    }
+  }
+
+  node "db\n(PostgreSQL 16)" as db {
+    database "Database museo\ntransazioni, vincoli,\nlock di riga, WAL" as pg
+  }
+
+  storage "Volume pgdata\n(memoria persistente)" as volume
+}
+
+browser --> static : HTTP(S) GET\nporta 8080 dell'host → 80
+browser --> proxy : HTTP(S) /api/...\nJSON + cookie (stessa origine)
+proxy --> uvicorn : HTTP\nrete interna, porta 8000
+uvicorn --> routers
+routers --> schemas
+routers --> services
+services --> models
+routers ..> core : dipendenze\n(sessione, utente corrente)
+models --> pg : SQL su TCP (psycopg)\nporta 5432, solo rete interna
+pg --> volume
+
+note bottom of host
+  Solo "web" pubblica una porta sull'host:
+  api e db sono raggiungibili solo dagli altri container.
+  Browser e API hanno la stessa origine: CORS non necessario.
+end note
+
+note left of services
+  Nessuna conoscenza di HTTP:
+  chiamabili da router, test
+  ed esperimento sulla concorrenza.
+end note
+@enduml

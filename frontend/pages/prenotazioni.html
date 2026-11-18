@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le mie prenotazioni – Museo Civico di Valdoro</title>
+  <link rel="preload" href="/css/fonts/source-serif-4-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/">
+        <span class="brand__text"><span class="brand__small">Museo Civico</span><span class="brand__name">Valdoro</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Navigazione principale">
+        <a href="/pages/eventi.html">Eventi</a>
+        <div class="user-area" data-user-area></div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenuto" class="section">
+    <div class="container">
+      <p class="eyebrow">Area visitatore</p>
+      <h1 class="page-title">Le mie prenotazioni</h1>
+      <p class="page-intro">Mostra il codice all'ingresso. Puoi annullare una prenotazione fino al termine indicato e, dopo l'evento, lasciare un feedback.</p>
+      <div data-message role="status" aria-live="polite"></div>
+      <div data-bookings></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="site-footer__grid">
+        <div>
+          <h2>Museo Civico di Valdoro</h2>
+          <p>Collezione permanente di storia e arte del territorio, mostre temporanee, visite guidate, laboratori e conferenze.</p>
+        </div>
+        <div>
+          <h2>Prenotazioni</h2>
+          <p><a href="/pages/eventi.html">Programma degli eventi</a></p>
+          <p><a href="/pages/prenotazioni.html">Le mie prenotazioni</a></p>
+        </div>
+        <div>
+          <h2>Contatti</h2>
+          <p>info@museovaldoro.example</p>
+        </div>
+      </div>
+      <p class="site-footer__note">Organizzazione simulata: nome del museo, nomi degli utenti e degli amministratori, eventi e dati sono inventati.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/js/pages/prenotazioni.js"></script>
+</body>
+</html>

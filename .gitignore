@@ -1,0 +1,25 @@
+# Configurazione locale con segreti (si versiona solo .env.example)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editor e sistema operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Anteprime generate dai diagrammi (si versiona il sorgente .puml)
+docs/diagrammi/*.png
+
+# Output temporanei dell'esperimento (i CSV definitivi vanno in docs/risultati/)
+backend/experiments/tmp/

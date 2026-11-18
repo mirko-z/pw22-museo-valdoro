@@ -1,0 +1,7 @@
+# Dipendenze per i test (includono quelle di esecuzione)
+-r requirements.txt
+pytest==9.1.1
+# Client HTTP usato dal TestClient di FastAPI/Starlette
+httpx2==2.13.1
+# Grafico dei risultati dell'esperimento (experiments/plot_results.py)
+matplotlib==3.11.2

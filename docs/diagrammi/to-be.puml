@@ -1,0 +1,89 @@
+@startuml to-be
+' Processo TO-BE – Prenotazione di un evento al Museo
+' Diagramma di attività UML
+title Processo TO-BE – Prenotazione di un evento
+
+|Staff|
+start
+:Crea l'evento
+(data, capienza, regole di prenotazione);
+
+|Piattaforma|
+:Valida i dati e pubblica l'evento;
+note right
+  Regole non indicate dallo staff
+  → valori di default da configurazione
+end note
+
+|Visitatore|
+:Consulta gli eventi pubblicati;
+:Accede (o si registra);
+:Sceglie l'evento e il numero di posti;
+
+|Piattaforma|
+:Apre una transazione e blocca
+la riga dell'evento (FOR UPDATE);
+if (Evento prenotabile, regole rispettate
+e posti disponibili?) then (sì)
+  :Registra la prenotazione **confirmed**
+  con codice non sequenziale;
+  :Commit della transazione;
+  note right
+    Sezione critica: le altre transazioni
+    che prenotano lo stesso evento
+    attendono il rilascio del lock
+    prima di verificare i posti (K1 = 0).
+    Indice univoco parziale:
+    una prenotazione attiva
+    per utente ed evento (K2 = 0).
+  end note
+else (no)
+  :Rollback e rifiuto
+  con motivazione;
+  |Visitatore|
+  stop
+endif
+
+|Visitatore|
+:Riceve subito la conferma
+e il codice (K3, K4);
+if (Vuole annullare?) then (sì)
+  |Piattaforma|
+  if (Entro il termine di annullamento?) then (sì)
+    :Stato → **cancelled**,
+    registra l'ora di annullamento;
+    note right
+      La prenotazione non viene
+      cancellata: lo storico resta
+      e alimenta K5.
+    end note
+    stop
+  else (no)
+    :Rifiuta l'annullamento:
+    la prenotazione resta confermata;
+  endif
+else (no)
+endif
+
+|Staff|
+:Consulta l'elenco dei partecipanti;
+|Visitatore|
+:Partecipa all'evento;
+:Lascia il feedback (voto 1–5, commento);
+
+|Piattaforma|
+:Accetta il feedback solo se la prenotazione
+è confermata e l'evento è concluso,
+uno per utente ed evento (K7, K8);
+
+|Staff|
+:Consulta la dashboard
+(riempimento, annullamenti,
+voto medio, andamento);
+note right
+  Indicatori calcolati in tempo reale
+  dai dati del processo: nessuna
+  elaborazione manuale (K5–K8).
+end note
+stop
+@enduml

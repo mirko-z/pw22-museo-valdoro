@@ -1,0 +1,71 @@
+@startuml casi-uso
+' Diagramma dei casi d'uso 
+' Attori e casi d'uso UC01–UC12
+title Casi d'uso – Ciclo di vita della prenotazione di un evento
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Ospite" as Guest
+actor "Visitatore\n(visitor)" as Visitor
+actor "Staff\n(staff)" as Staff
+actor "Admin\n(admin)" as Admin
+
+' Generalizzazioni tra attori (IS-07, §2–3): il visitatore eredita la
+' consultazione dell'ospite, l'admin eredita tutti i casi d'uso dello staff
+Guest <|-- Visitor
+Staff <|-- Admin
+
+rectangle "Piattaforma di prenotazione" {
+  usecase "UC01 Registrarsi" as UC01
+  usecase "UC02 Accedere / uscire" as UC02
+  usecase "UC03 Consultare gli eventi" as UC03
+
+  usecase "UC04 Prenotare un evento" as UC04
+  usecase "UC05 Annullare una prenotazione" as UC05
+  usecase "UC06 Consultare le proprie prenotazioni" as UC06
+  usecase "UC07 Lasciare un feedback" as UC07
+
+  usecase "UC08 Gestire gli eventi e le regole" as UC08
+  usecase "UC09 Annullare un evento" as UC09
+  usecase "UC10 Consultare partecipanti e feedback" as UC10
+  usecase "UC11 Consultare la dashboard" as UC11
+
+  usecase "UC12 Gestire i ruoli degli utenti" as UC12
+}
+
+Guest --> UC01
+Guest --> UC03
+
+Visitor --> UC02
+Visitor --> UC04
+Visitor --> UC05
+Visitor --> UC06
+Visitor --> UC07
+
+Staff --> UC02
+Staff --> UC08
+Staff --> UC09
+Staff --> UC10
+Staff --> UC11
+
+Admin --> UC12
+
+note right of UC04
+  Caso d'uso critico (scenario completo
+  in sequenza-prenotazione.puml): controllo dei posti
+  sicuro in concorrenza, una sola
+  prenotazione attiva per utente ed evento.
+end note
+
+note right of UC07
+  Solo con prenotazione confermata
+  per un evento concluso e non annullato.
+end note
+
+note right of UC09
+  Le prenotazioni confermate
+  passano a "cancelled".
+end note
+@enduml

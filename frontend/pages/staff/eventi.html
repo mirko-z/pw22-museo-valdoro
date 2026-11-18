@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eventi – Area staff</title>
+  <link rel="stylesheet" href="/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/staff.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand bg-body-tertiary border-bottom mb-4" aria-label="Area staff">
+    <div class="container flex-wrap gap-2">
+      <span class="navbar-brand">Valdoro · Staff</span>
+      <div class="navbar-nav flex-wrap">
+        <a class="nav-link" href="/pages/staff/dashboard.html" data-staff-only hidden>Dashboard</a>
+        <a class="nav-link active" aria-current="page" href="/pages/staff/eventi.html" data-staff-only hidden>Eventi</a>
+        <a class="nav-link" href="/">Sito pubblico</a>
+      </div>
+      <div class="ms-auto d-flex gap-3 align-items-center small" data-user-area></div>
+    </div>
+  </nav>
+
+  <main class="container pb-5">
+    <div class="row g-4">
+      <section class="col-lg-7">
+        <h1 class="h3 mb-3">Eventi</h1>
+        <div data-message role="status" aria-live="polite"></div>
+        <div class="table-responsive">
+          <table class="table table-sm table-hover">
+            <thead><tr>
+              <th scope="col">Evento</th><th scope="col">Data</th><th scope="col">Stato</th>
+              <th scope="col" class="text-end">Posti</th>
+            </tr></thead>
+            <tbody data-events></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="col-lg-5">
+        <div class="card"><div class="card-body">
+          <h2 class="h5" data-form-title>Nuovo evento</h2>
+          <form data-event-form novalidate>
+            <input type="hidden" name="id">
+            <div class="mb-2">
+              <label class="form-label" for="f-title">Titolo</label>
+              <input class="form-control" id="f-title" name="title" minlength="3" maxlength="200" required>
+            </div>
+            <div class="mb-2">
+              <label class="form-label" for="f-type">Tipo</label>
+              <select class="form-select" id="f-type" name="type" required>
+                <option value="guided_tour">Visita guidata</option>
+                <option value="workshop">Laboratorio</option>
+                <option value="conference">Conferenza</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="form-label" for="f-description">Descrizione</label>
+              <textarea class="form-control" id="f-description" name="description" rows="2"></textarea>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-sm-6">
+                <label class="form-label" for="f-start">Inizio</label>
+                <input class="form-control" id="f-start" name="start_at" type="datetime-local" required>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label" for="f-end">Fine</label>
+                <input class="form-control" id="f-end" name="end_at" type="datetime-local" required>
+              </div>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label" for="f-capacity">Capienza</label>
+                <input class="form-control" id="f-capacity" name="capacity" type="number" min="1" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label" for="f-price">Prezzo (€)</label>
+                <input class="form-control" id="f-price" name="price" type="number" min="0" step="0.01" value="0">
+              </div>
+            </div>
+            <fieldset class="row g-2 mb-3">
+              <legend class="form-label small text-body-secondary mb-0">Regole di prenotazione (vuoto = valore predefinito)</legend>
+              <div class="col-6">
+                <label class="form-label" for="f-max">Max posti per prenotazione</label>
+                <input class="form-control" id="f-max" name="max_seats_per_booking" type="number" min="1">
+              </div>
+              <div class="col-6">
+                <label class="form-label" for="f-deadline">Annullamento (ore prima)</label>
+                <input class="form-control" id="f-deadline" name="cancellation_deadline_hours" type="number" min="0">
+              </div>
+            </fieldset>
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary" type="submit">Salva</button>
+              <button class="btn btn-outline-secondary" type="reset">Nuovo</button>
+            </div>
+          </form>
+        </div></div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="/js/pages/staff-eventi.js"></script>
+</body>
+</html>
