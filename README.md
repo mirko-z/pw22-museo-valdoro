@@ -3,6 +3,7 @@
 Project work PW22 – Corso di laurea in Informatica per le Aziende Digitali (L-31), Università Telematica Pegaso.
 
 *Prevenire l'overbooking: progettazione di una piattaforma web per un museo e analisi sperimentale del controllo della concorrenza*
+
 Prototipo di piattaforma web che digitalizza il ciclo di vita della prenotazione di un evento in un museo. Contiene: pubblicazione dell'evento, prenotazione sicura in concorrenza, annullamento, feedback, indicatori per la direzione.
 
 ## Architettura
