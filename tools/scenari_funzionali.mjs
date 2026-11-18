@@ -272,8 +272,10 @@ await scenario('S10', 'UC08', 'Creazione e modifica di un evento con regole prop
   check((await f('start_at').inputValue()) === localInput(20, 17), 'il modulo di modifica rilegge l\'orario senza spostamenti di fuso');
   await f('capacity').fill('15');
   await staff.click('[data-event-form] button[type=submit]');
-  await staff.waitForFunction(() => document.querySelector('[data-message]')?.textContent.includes('salvato'));
-  check((await staff.locator('tr', { hasText: NEW_EVENT }).textContent()).includes('0/15'), 'modifica salvata: capienza 15');
+  // il messaggio "salvato" della creazione è ancora a schermo: si attende che la riga mostri la nuova capienza
+  const updated = await staff.locator('tr', { hasText: NEW_EVENT }).filter({ hasText: '0/15' })
+    .waitFor({ timeout: 5000 }).then(() => true, () => false);
+  check(updated, 'modifica salvata: capienza 15');
   // le regole valgono sul sito pubblico (RF09)
   await user.goto(`${BASE}/pages/eventi.html`);
   const card = user.locator('.card', { hasText: NEW_EVENT });
@@ -292,10 +294,18 @@ await scenario('S10', 'UC08', 'Creazione e modifica di un evento con regole prop
 await scenario('S11', 'UC10', 'Partecipanti e feedback di un evento', async () => {
   await staff.goto(`${BASE}/pages/staff/eventi.html`);
   await staff.waitForSelector('[data-events] tr');
-  await staff.locator('tr', { hasText: feedbackEvent }).first().locator('a:has-text("Partecipanti")').click();
-  await staff.waitForSelector('[data-participants] tr');
-  check(await staff.locator('[data-participants] tr').count() > 0, 'elenco dei partecipanti con posti e codice');
-  check((await staff.locator('[data-feedback]').textContent()).includes('Visita molto curata'), 'il feedback lasciato in S08 è visibile allo staff');
+  // più eventi possono avere lo stesso titolo (date diverse): si aprono quelli conclusi finché non compare il feedback di S08
+  const rows = staff.locator('tr', { hasText: feedbackEvent }).filter({ hasText: 'concluso' });
+  const links = await rows.locator('a:has-text("Partecipanti")').evaluateAll((as) => as.map((a) => a.href));
+  let seen = false;
+  for (const href of links) {
+    await staff.goto(href);
+    await staff.waitForSelector('[data-participants] tr');
+    await staff.waitForLoadState('networkidle');
+    if ((await staff.locator('[data-feedback]').textContent()).includes('Visita molto curata')) { seen = true; break; }
+  }
+  check(await staff.locator('[data-participants] tr td:nth-child(4)').count() > 0, 'elenco dei partecipanti con posti e codice');
+  check(seen, 'il feedback lasciato in S08 è visibile allo staff');
   await shot(staff, 'S11-partecipanti-feedback', { fullPage: true });
 });
 
@@ -304,7 +314,10 @@ await scenario('S12', 'UC09', 'Annullamento di un evento da parte del museo', as
   const row = staff.locator('tr', { hasText: NEW_EVENT });
   await row.locator('button:text-is("Annulla")').click();
   await staff.waitForFunction(() => document.querySelector('[data-message]')?.textContent.includes('annullato'));
-  check((await staff.locator('tr', { hasText: NEW_EVENT }).textContent()).includes('annullato'), 'stato dell\'evento: annullato');
+  // il messaggio compare prima che l'elenco sia ricaricato: si attende la riga aggiornata
+  const cancelled = await staff.locator('tr', { hasText: NEW_EVENT }).filter({ hasText: 'annullato' })
+    .waitFor({ timeout: 5000 }).then(() => true, () => false);
+  check(cancelled, 'stato dell\'evento: annullato');
   await shot(staff, 'S12-evento-annullato-staff');
   await user.goto(`${BASE}/pages/prenotazioni.html`);
   const card = user.locator('.card', { hasText: NEW_EVENT });

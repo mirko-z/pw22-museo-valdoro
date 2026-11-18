@@ -52,7 +52,7 @@ Tutti con la password indicata in `SEED_DEMO_PASSWORD` (`.env`). Dati inventati,
 | visitor (insegnante) | `paola.ferrante@example.com` |
 | visitor | `marco.bianchi@example.com` |
 
-Il seed crea 24 eventi con date relative al giorno di avvio. 7 saranno conclusi (con prenotazioni e feedback, uno annullato dal museo) e 17 futuri distribuiti su circa sei mesi. Le prenotazioni calano con la distanza (uno esaurito, uno con meno posti liberi del massimo per prenotazione, alcuni sono senza prenotazioni). Ogni evento cade su un giorno della settimana fisso: laboratori scolastici al mattino nei giorni feriali, conferenze la sera, visite e attività per famiglie nel fine settimana.
+Il seed crea 24 eventi con date relative al giorno di avvio. 7 sono conclusi (con prenotazioni e feedback, uno annullato dal museo) e 17 futuri distribuiti su circa sei mesi. Le prenotazioni calano con la distanza (uno esaurito, uno con meno posti liberi del massimo per prenotazione, alcuni sono senza prenotazioni). Ogni evento cade su un giorno della settimana fisso: laboratori scolastici al mattino nei giorni feriali, conferenze la sera, visite e attività per famiglie nel fine settimana.
 
 ## Database e migrazioni
 Lo schema è definito dai modelli contenuti in `backend/app/models/` e creato dalle migrazioni in `backend/alembic/versions/`.
@@ -88,9 +88,9 @@ Output in `docs/risultati/`: `esperimento_ripetizioni.csv` (una riga per ripetiz
 ```
 backend/    applicazione FastAPI (app/), test (tests/), esperimento (experiments/)
 frontend/   pagine statiche e configurazione di nginx
-docs/       diagrammi UML ed E-R (PlantUML, diagrammi/) e risultati dell'esperimento (risultati/)
+docs/        requisiti e casi d'uso (requisiti.md), diagrammi UML ed E-R (diagrammi/) e risultati dell'esperimento (risultati/)
 tools/      scenari funzionali end-to-end con Playwright
-```
+```     
 
 ## Componenti di terze parti nel front-end
 Serviti in locale (per la Content Security Policy):
